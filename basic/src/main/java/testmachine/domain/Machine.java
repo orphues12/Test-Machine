@@ -23,8 +23,8 @@ public class Machine {
 
     private String type;
 
-    @Embedded
-    private GroupId groupId;
+    @ElementCollection
+    private List<GroupId> groupId;
 
     @PostPersist
     public void onPostPersist() {

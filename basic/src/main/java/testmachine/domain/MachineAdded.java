@@ -13,7 +13,7 @@ public class MachineAdded extends AbstractEvent {
     private String name;
     private String modelName;
     private String type;
-    private GroupId groupId;
+    private List<GroupId> groupId;
 
     public MachineAdded(Machine aggregate) {
         super(aggregate);

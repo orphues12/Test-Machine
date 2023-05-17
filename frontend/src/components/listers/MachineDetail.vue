@@ -14,7 +14,7 @@
             <div>
                 <String label="Type" v-model="item.type" :editMode="editMode" @change="change" />
             </div>
-            <GroupId offline label="GroupId" v-model="item.groupId" :editMode="false" :key="false" @change="change" />
+            <GroupIdManager offline label="GroupId" v-model="item.groupId" :editMode="false" @change="change" />
         </v-card-text>
 
         <v-card-actions>
