@@ -32,7 +32,7 @@ mvn spring-boot:run
 ## Test by API
 - basic
 ```
- http :8088/machines id="id" name="name" modelName="modelName" type="type" groupId="groupId" 
+ http :8088/machines id="id" name="name" modelName="modelName" type="type" 
  http :8088/groups id="id" name="name" 
 ```
 

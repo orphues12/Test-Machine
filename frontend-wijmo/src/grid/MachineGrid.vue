@@ -30,15 +30,12 @@
             :selectionChanged="onSelectionChanged"
             style="margin-top:10px; max-height:65vh;"
         >
-            <wj-flex-grid-filter :filterColumns="['name','modelName','type','groupId',]" />
+            <wj-flex-grid-filter :filterColumns="['name','modelName','type',]" />
             <wj-flex-grid-column binding="index" header="Number" width="2*" :isReadOnly="true" align="center" />
-            <wj-flex-grid-column binding="groupId[0].name" header="groupId" width="2*" :isReadOnly="true" align="center" />
             <wj-flex-grid-column binding="name" header="name" width="2*" :isReadOnly="true" align="center" />
             <wj-flex-grid-column binding="modelName" header="modelName" width="2*" :isReadOnly="true" align="center" />
             <wj-flex-grid-column binding="type" header="type" width="2*" :isReadOnly="true" align="center" />
-            <wj-flex-grid-column binding="groupId." header="group" width="2*" :isReadOnly="true" align="center" />
         </wj-flex-grid>
-        <GroupIdDetailGrid :selectedGrid="selectedGrid" />
         <v-col style="margin-bottom:40px;">
             <div class="text-center">
                 <v-dialog
@@ -73,7 +70,6 @@
 <script>
 import MachineViewQuery from '../components/MachineViewQuery.vue';
 import Machine from '../components/Machine.vue'
-import GroupIdDetailGrid from './GroupIdDetailGrid.vue'
 
 const axios = require('axios').default;
 
@@ -94,7 +90,6 @@ export default {
     components:{
         MachineViewQuery,
         Machine,
-        GroupIdDetailGrid,
     },
     data: () => ({
         tick : true,
@@ -151,7 +146,7 @@ export default {
         onSelectionChanged(s) {
             let selectedItem = s.collectionView.currentItem;
             if (selectedItem) {
-                this.selectedGrid = selectedItem.groupId;
+                this.selectedGrid = selectedItem;
                 this.selectedGrid = this.selectedGrid.map((user, index) => {
                     return { ...user, index: index };
                 });

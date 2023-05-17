@@ -70,7 +70,6 @@
                     { text: "name", value: "name" },
                     { text: "modelName", value: "modelName" },
                     { text: "type", value: "type" },
-                    { text: "groupId", value: "groupId" },
                 ],
             machine : [],
             newValue: {},
@@ -91,7 +90,6 @@
                 'name': '',
                 'modelName': '',
                 'type': '',
-                'groupId': [],
             }
         },
         methods: {

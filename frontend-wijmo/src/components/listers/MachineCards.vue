@@ -80,7 +80,6 @@
                     'name': '',
                     'modelName': '',
                     'type': '',
-                    'groupId': [],
                 }
             },
 

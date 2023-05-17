@@ -23,9 +23,6 @@ public class Machine {
 
     private String type;
 
-    @ElementCollection
-    private List<Group> groupId;
-
     @PostPersist
     public void onPostPersist() {
         MachineAdded machineAdded = new MachineAdded(this);

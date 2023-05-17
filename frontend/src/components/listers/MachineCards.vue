@@ -71,7 +71,6 @@
                 'name': '',
                 'modelName': '',
                 'type': '',
-                'groupId': [],
             }
         },
         methods:{

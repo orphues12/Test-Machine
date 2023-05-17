@@ -31,9 +31,6 @@
                                         <v-list-item-subtitle>
                                             Type :  {{item.type }}
                                         </v-list-item-subtitle>
-                                        <v-list-item-subtitle>
-                                            GroupId :  {{item.groupId }}
-                                        </v-list-item-subtitle>
                                     </v-list-item-content>
 
                                     <v-list-item-action>
@@ -81,12 +78,10 @@
                 
                 
                 
-                
                 var id = me.value[idKey];
                 var tmpValue = await axios.get(axios.fixUrl('/machines/' + id))
                 if(tmpValue.data) {
                     var val = tmpValue.data
-                    
                     
                     
                     
@@ -104,7 +99,6 @@
                     
                     
                     
-                    
                     var id = this.value[idKey];
                     var path = '/machines/';
                     this.$router.push(path + id);
@@ -115,7 +109,6 @@
                 if(val != undefined) {
                     var arr = this.list[val]._links.self.href.split('/');
                     obj['id'] = arr[4]; 
-                    
                     
                     
                     

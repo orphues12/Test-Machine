@@ -13,7 +13,6 @@
                             
                             
                             
-                            
                         </v-list-item-title>
 
                         <v-list-item-subtitle style="font-size:25px; font-weight:700;">
@@ -21,7 +20,6 @@
                             [ Name :  {{data.name }} ] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             [ ModelName :  {{data.modelName }} ] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             [ Type :  {{data.type }} ] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            [ GroupId :  {{data.groupId }} ] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         </v-list-item-subtitle>
 
                     </v-list-item-content>
@@ -106,7 +104,6 @@
                 'name': '',
                 'modelName': '',
                 'type': '',
-                'groupId': [],
             }
         },
         methods: {
