@@ -4,7 +4,7 @@
             <v-list-group v-model="isExpansion">
                 <template v-slot:activator>
                     <v-list-item-content>
-                        <v-list-item-title>GroupId</v-list-item-title>
+                        <v-list-item-title>Group</v-list-item-title>
                     </v-list-item-content>
                 </template>
             
@@ -24,7 +24,7 @@
             </v-list-group>
         </v-list>
 
-        <GroupId v-if="editMode && tick" offline :isNew="true" :inList="true"
+        <Group v-if="editMode && tick" offline :isNew="true" :inList="true"
                 :editMode="editMode" v-model="newValue" @add="append">
             <template slot="actions">
                 <v-spacer></v-spacer>
@@ -54,17 +54,17 @@
                     Delete
                 </v-btn>
             </template>
-        </GroupId>
+        </Group>
     </div>
 </template>
 
 <script>
-    import GroupId from '../GroupId.vue';
+    import Group from '../Group.vue';
 
     export default {
-        name: 'GroupIdManager',
+        name: 'GroupManager',
         components: {
-            GroupId
+            Group
         },
         props: {
             value: [Object, String, Number, Boolean, Array],

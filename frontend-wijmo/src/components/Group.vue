@@ -1,273 +1,74 @@
 <template>
-
-    <v-card style="width:450px;" outlined>
-        <template slot="progress">
-            <v-progress-linear
-                color="deep-purple"
-                height="10"
-                indeterminate
-            ></v-progress-linear>
-        </template>
-
-        <v-card-title v-if="value._links">
-            Group # {{value._links.self.href.split("/")[value._links.self.href.split("/").length - 1]}}
-        </v-card-title >
-        <v-card-title v-else>
-            Group
-        </v-card-title >
-
-        <v-card-text>
-            <String label="Name" v-model="value.name" :editMode="editMode"/>
-        </v-card-text>
-
-        <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-                color="deep-purple lighten-2"
-                text
-                @click="edit"
-                v-if="!editMode"
-            >
-                Edit
-            </v-btn>
-            <v-btn
-                color="deep-purple lighten-2"
-                text
-                @click="save"
-                v-else
-            >
-                GroupAdd
-            </v-btn>
-            <v-btn
-                color="deep-purple lighten-2"
-                text
-                @click="remove"
-                v-if="!editMode"
-            >
-                Delete
-            </v-btn>
-            <v-btn
-                color="deep-purple lighten-2"
-                text
-                @click="editMode = false"
-                v-if="editMode && !isNew"
-            >
-                Cancel
-            </v-btn>
-        </v-card-actions>
-        <v-card-actions>
-            <v-spacer></v-spacer>
-        </v-card-actions>
-
-        <v-snackbar
-            v-model="snackbar.status"
-            :top="true"
-            :timeout="snackbar.timeout"
-            color="error"
-        >
-            {{ snackbar.text }}
-            <v-btn dark text @click="snackbar.status = false">
-                Close
-            </v-btn>
-        </v-snackbar>
+    <v-card outlined>
+        <GroupPicker v-model="value" @selected="pick" :editMode="editMode" />
     </v-card>
+
 </template>
 
 <script>
-const axios = require('axios').default;
-
-import GroupBase from '../components/GroupBase.vue'
-
-import { RSocketClient } from 'rsocket-core';
-import RSocketWebSocketClient from 'rsocket-websocket-client';
-import { IdentitySerializer, JsonSerializer } from "rsocket-core/build";
-
-
-
-export default {
-    name: 'Group',
-    mixins:[GroupBase],
-    components:{
-    },
-    props: {
-        value: [Object, String, Number, Boolean, Array],
-        editMode: Boolean,
-        isNew: Boolean,
-        offline: Boolean,
-    },
-    data: () => ({
-        snackbar: {
-            status: false,
-            timeout: 5000,
-            text: ''
+    export default {
+        name: 'Group',
+        components:{},
+        props: {
+            value: [Object, String, Number, Boolean, Array],
+            editMode: Boolean,
+            isNew: Boolean,
+            offline: Boolean,
+            inList: Boolean,
+            label: String,
         },
-    }),
-    created(){
-        if(this.isNew) return;
-
-        var websocketUrl = new URL(window.location.href);
-
-        websocketUrl.protocol = "wss";
-        websocketUrl.pathname = "/rsocket/groups";
-        websocketUrl.hash = "";
-        
-        var me = this;
-
-        const transport = new RSocketWebSocketClient(
-            {
-                url: websocketUrl.href
-            }
-        );
-        const client = new RSocketClient({
-            // send/receive JSON objects instead of strings/buffers
-            serializers: {
-            data: JsonSerializer,
-            metadata: IdentitySerializer
-            },
-            setup: {
-            // ms btw sending keepalive to server
-            keepAlive: 60000,
-            // ms timeout if no keep-alive response
-            lifetime: 180000,
-            dataMimeType: "application/json",
-            metadataMimeType: 'message/x.rsocket.routing.v0'
-            },
-            transport
-        });
-        client.connect().subscribe({
-            onComplete: socket => {
-            let requestedMsg = 10;
-
-            // console.log("connected to rsocket"); // debug
-            const endpoint = "groups."+ me.value.id +".get"
-            socket.requestStream({
-                data: {},
-                metadata: String.fromCharCode(endpoint.length) + endpoint
-            })
-                .subscribe({
-                    onSubscribe: (sub) => {
-                        console.log("subscribed to server stream"); // debug
-                        this.requestStreamSubscription = sub
-                        this.requestStreamSubscription.request(requestedMsg)
-                    },
-                    onNext: (e) => {
-                        e.data._links = me.value._links;
-                        me.value = e.data
-                        
-                    },
-                    onError: error => {
-                        // console.log("got error with requestStream"); // debug
-                        console.error(error);
-                    },
-                    onComplete: () => {
-                        // console.log("requestStream completed"); // debug
-                    }
-                });
-            },
-            onError: error => {
-                console.error(error);
-            },
-            // onSubscribe: cancel => {
-            // }
-        });
-
-    },
-    computed:{
-    },
-    methods: {
-        async init() {
-            var me = this;
-            let lists = await me.search();
-            me.values = lists;
-        },
-        selectFile(){
-            if(this.editMode == false) {
-                return false;
-            }
-            var me = this
-            var input = document.createElement("input");
-            input.type = "file";
-            input.accept = "image/*";
-            input.id = "uploadInput";
-            
-            input.click();
-            input.onchange = function (event) {
-                var file = event.target.files[0]
-                var reader = new FileReader();
-
-                reader.onload = function () {
-                    var result = reader.result;
-                    me.imageUrl = result;
-                    me.value.photo = result;
-                    
-                };
-                reader.readAsDataURL( file );
-            };
-        },
-        edit() {
-            this.editMode = true;
-        },
-        async save(){
-            try {
-                var temp = null;
-
-                if(!this.offline) {
-                    if(this.isNew) {
-                        temp = await axios.post(axios.fixUrl('/groups'), this.value)
-                    } else {
-                        temp = await axios.put(axios.fixUrl(this.value._links.self.href), this.value)
-                    }
+        data: () => ({
+            newValue: {},
+            pickerDialog: false,
+        }),
+        async created() {
+            if(!Object.values(this.value)[0]) {
+                this.$emit('input', {});
+                this.newValue = {
+                    'id': '',
                 }
-                if(this.value!=null) {
-                    for(var k in temp.data) this.value[k]=temp.data[k];
-                } else {
-                    this.value = temp.data;
-                }
+            }
+            else {
+                this.newValue = this.value;
+            }
+        },
+        watch: {
+            value(val) {
+                this.$emit('input', val);
+            },
+            newValue(val) {
+                this.$emit('input', val);
+            },
+        },
 
+        methods: {
+            edit() {
+                this.editMode = true;
+            },
+            async add() {
                 this.editMode = false;
                 this.$emit('input', this.value);
 
-                if (this.isNew) {
+                if(this.isNew){
                     this.$emit('add', this.value);
                 } else {
                     this.$emit('edit', this.value);
                 }
-
-                location.reload()
-
-            } catch(e) {
-                this.snackbar.status = true
-                if(e.response && e.response.data.message) {
-                    this.snackbar.text = e.response.data.message
-                } else {
-                    this.snackbar.text = e
-                }
-            }
-            
-        },
-        async remove(){
-            try {
-                if (!this.offline) {
-                    await axios.delete(axios.fixUrl(this.value._links.self.href))
-                }
+            },
+            async remove(){
                 this.editMode = false;
                 this.isDeleted = true;
 
                 this.$emit('input', this.value);
                 this.$emit('delete', this.value);
-            } catch(e) {
-                this.snackbar.status = true
-                if(e.response && e.response.data.message) {
-                    this.snackbar.text = e.response.data.message
-                } else {
-                    this.snackbar.text = e
-                }
-            }
-        },
-        change(){
-            this.$emit('input', this.value);
-        },
-    },
-}
+            },
+            change(){
+                this.$emit('change', this.value);
+            },
+            async pick(val){
+                this.newValue = val;
+            },
+        }
+    }
 </script>
 

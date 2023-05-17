@@ -22,7 +22,7 @@ import '@grapecity/wijmo.touch';
 import '@grapecity/wijmo.vue2.grid';
 
 export default {
-    name: 'groupIdDetailGrid',
+    name: 'groupDetailGrid',
     props: {
         selectedGrid: {
             type: Array,
