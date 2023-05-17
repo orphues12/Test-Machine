@@ -20,7 +20,7 @@
             <String label="Name" v-model="value.name" :editMode="editMode"/>
             <String label="ModelName" v-model="value.modelName" :editMode="editMode"/>
             <String label="Type" v-model="value.type" :editMode="editMode"/>
-            <GroupId offline label="GroupId" v-model="value.groupId" :editMode="editMode" @change="change"/>
+            <GroupManager offline label="GroupId" v-model="value.groupId" :editMode="editMode" @change="change"/>
         </v-card-text>
 
         <v-card-actions>

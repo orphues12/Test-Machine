@@ -3,7 +3,6 @@
 </template>
 
 <script>
-    import GroupBase from '../components/GroupBase.vue'
     const axios = require('axios').default;
 
     export default{
@@ -54,15 +53,10 @@
                 }
             },
             async processData(data){
-                let GroupClass = this.$Vue.extend(GroupBase);
-                this.groupId = new GroupClass();
                 
 
                 let Promises = data.map(async (value) => {
                     if(value == null) return
-                    if (value.groupId && value.groupId.id){
-                        value.groupId = await this.groupId.getRealEntity(value.groupId.id);
-                    }
                 });
                 await Promise.all(Promises);
                 for(var i = 0; i < data.length ; i++ ) {

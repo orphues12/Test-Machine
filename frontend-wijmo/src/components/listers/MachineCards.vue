@@ -80,7 +80,7 @@
                     'name': '',
                     'modelName': '',
                     'type': '',
-                    'groupId': {},
+                    'groupId': [],
                 }
             },
 

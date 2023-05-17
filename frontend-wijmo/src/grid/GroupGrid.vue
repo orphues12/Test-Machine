@@ -12,6 +12,7 @@
             </v-btn>
             <excel-export-button :exportService="this.exportService" :getFlex="getFlex" />
         </div>
+        <GroupViewQuery @search="search"></GroupViewQuery>
 
         <!-- the grid -->
         <wj-flex-grid
@@ -65,6 +66,7 @@
 </template>
 
 <script>
+import GroupViewQuery from '../components/GroupViewQuery.vue';
 import Group from '../components/Group.vue'
 
 const axios = require('axios').default;
@@ -84,6 +86,7 @@ export default {
     name : 'group-grid',
     mixins:[Group],
     components:{
+        GroupViewQuery,
         Group,
     },
     data: () => ({
